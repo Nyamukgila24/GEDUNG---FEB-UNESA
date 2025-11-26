@@ -345,7 +345,7 @@ static void displayTextParams() {
 
 // --- LOGIKA PERGERAKAN ---
 void handleMovement() {
-    float speed = 2.0f; // Kecepatan normal
+    float speed = 0.1f; // Kecepatan normal
 
     if (keyStates['w']) {
         x += lx * speed;
@@ -463,7 +463,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(1280, 720);
-    glutCreateWindow("GEDUNG FEB UNESA - BENDERA FIXED");
+    glutCreateWindow("GEDUNG FEB UNESA");
 
     init();
 
