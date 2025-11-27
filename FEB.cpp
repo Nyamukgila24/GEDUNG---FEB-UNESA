@@ -371,35 +371,161 @@ void handleMovement() {
         if (y < 1.75f) y = 1.75f;
     }
 }
+static void drawGapuraFEB(float px, float py, float pz) {
+    glPushMatrix();
+    glTranslatef(px, py, pz);
 
+    // SESUAI REQUEST: Rotasi -45 derajat
+    glRotatef(-45.0f, 0.0f, 1.0f, 0.0f);
+
+    float radius = 24.0f;
+    int segments = 60;
+    float totalAngle = 100.0f;
+
+    // 1. GAMBAR DINDING
+    for (int i = 0; i < segments; i++) {
+        float angle = -totalAngle / 2 + (i * (totalAngle / segments));
+
+        glPushMatrix();
+        glRotatef(angle, 0, 1, 0);
+        glTranslatef(0.0f, 0.0f, -radius); // Mundur radius 24
+
+        float segWidth = 1.3f;
+
+        // List Biru Bawah
+        glColor3f(0.0f, 0.6f, 0.8f); glPushMatrix(); glTranslatef(0.0f, 0.5f, 0.0f); glScalef(segWidth, 1.0f, 1.0f); glutSolidCube(1.0f); glPopMatrix();
+        // Tingkat 1
+        glColor3f(0.6f, 0.4f, 0.2f); glPushMatrix(); glTranslatef(0.0f, 1.5f, -0.8f); glScalef(segWidth, 1.0f, 1.0f); glutSolidCube(1.0f); glPopMatrix();
+        glColor3f(1.0f, 1.0f, 1.0f); glPushMatrix(); glTranslatef(0.0f, 2.0f, -0.8f); glScalef(segWidth, 0.2f, 1.2f); glutSolidCube(1.0f); glPopMatrix();
+        // Tingkat 2
+        glColor3f(0.6f, 0.4f, 0.2f); glPushMatrix(); glTranslatef(0.0f, 2.5f, -1.8f); glScalef(segWidth, 1.0f, 1.0f); glutSolidCube(1.0f); glPopMatrix();
+        glColor3f(1.0f, 1.0f, 1.0f); glPushMatrix(); glTranslatef(0.0f, 3.0f, -1.8f); glScalef(segWidth, 0.2f, 1.2f); glutSolidCube(1.0f); glPopMatrix();
+        // Tingkat 3
+        glColor3f(0.6f, 0.4f, 0.2f); glPushMatrix(); glTranslatef(0.0f, 3.5f, -2.8f); glScalef(segWidth, 1.0f, 1.0f); glutSolidCube(1.0f); glPopMatrix();
+        glColor3f(1.0f, 1.0f, 1.0f); glPushMatrix(); glTranslatef(0.0f, 4.0f, -2.8f); glScalef(segWidth, 0.2f, 1.2f); glutSolidCube(1.0f); glPopMatrix();
+
+        // Dinding Belakang Putih
+        // PENTING: Posisinya mundur 3.8 dari pusat segmen
+        glColor3f(0.95f, 0.95f, 0.95f);
+        glPushMatrix();
+        glTranslatef(0.0f, 6.5f, -3.8f);
+        glScalef(segWidth, 6.0f, 1.0f);
+        glutSolidCube(1.0f);
+        glPopMatrix();
+
+        // List Biru Tengah
+        glColor3f(0.0f, 0.6f, 0.8f); glPushMatrix(); glTranslatef(0.0f, 5.5f, -3.3f); glScalef(segWidth, 0.6f, 0.2f); glutSolidCube(1.0f); glPopMatrix();
+
+        glPopMatrix();
+    }
+
+    // 2. TULISAN "FAKULTAS EKONOMIKA DAN BISNIS" (DIJAMIN NEMPEL)
+    const char* textString = "FAKULTAS EKONOMIKA DAN BISNIS";
+    int len = strlen(textString);
+
+    // HITUNGAN MATEMATIKA POSISI:
+    // Radius Lengkungan (-24.0) + Mundur Dinding (-3.8) + Setengah Tebal Dinding (+0.5)
+    // = -27.3 (Permukaan Wajah Dinding)
+    // Kita taruh di -27.2 (Maju 0.1) biar nempel pas.
+    float textZ = -27.2f;
+
+    float angleStep = 3.0f;
+    float totalTextAngle = len * angleStep;
+    float startAngle = totalTextAngle / 2.0f;
+
+    glColor3f(0.0f, 0.5f, 0.5f); // Hijau Tosca
+    glLineWidth(2.0f);
+
+    for (int j = 0; j < len; j++) {
+        if (textString[j] == ' ') continue;
+
+        // Hitung sudut huruf
+        float currentAngle = startAngle - (j * angleStep);
+
+        glPushMatrix();
+        // 1. Putar sesuai lengkungan tembok (Matrix Rotation)
+        glRotatef(currentAngle, 0, 1, 0);
+
+        // 2. Geser kedalaman sama persis dengan tembok (textZ)
+        glTranslatef(0.0f, 6.5f, textZ);
+
+        // 3. Atur Ukuran & Posisi Tengah Huruf
+        glScalef(0.015f, 0.018f, 0.015f); // Scale positif
+        glTranslatef(-50.0f, 0.0f, 0.0f); // Center align
+
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, textString[j]);
+        glPopMatrix();
+    }
+    glLineWidth(1.0f);
+
+    // 3. LOGO KUNING
+    float logoAngle = startAngle + 8.0f;
+
+    glPushMatrix();
+    glRotatef(logoAngle, 0, 1, 0);
+    glTranslatef(0.0f, 6.8f, textZ); // Z sama dengan teks
+
+    glColor3f(1.0f, 0.8f, 0.0f);
+    glPushMatrix();
+    drawDisk(0.0f, 1.5f, 30);
+    drawCylinder(1.5f, 1.5f, 0.3f, 30);
+    glTranslatef(0.0f, 0.0f, 0.3f);
+    drawDisk(0.0f, 1.5f, 30);
+    glPopMatrix();
+
+    glPopMatrix();
+
+    glPopMatrix();
+}
 static void display() {
     handleMovement();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
+    // Kamera
     gluLookAt(x, y, z,
         x + lx, y + sin(pitch), z + lz,
         0.0f, 1.0f, 0.0f);
 
+    // Pencahayaan
     GLfloat light_pos[] = { 0.0f, 100.0f, 100.0f, 0.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 
+    // 1. Gambar Lingkungan (Rumput & Jalan)
     drawEnvironment();
+
+    // 2. Gedung Utama G3 (Yang detail ada menara kacanya)
     drawGedungG3Unesa(40.0f, 0.0f, -250.0f);
 
-    // Gedung Background
-    drawBuilding(20.0f, 0.0f, -320.0f, 5.0f, 20.0f, 5.0f);
-    drawBuilding(60.0f, 0.0f, -320.0f, 5.0f, 20.0f, 5.0f);
-    drawBuilding(40.0f, 18.0f, -320.0f, 45.0f, 4.0f, 5.0f);
-    drawBuilding(50.0f, 0.0f, -160.0f, 60.0f, 25.0f, 60.0f);
-    drawBuilding(10.0f, 0.0f, -160.0f, 15.0f, 15.0f, 20.0f);
-    drawBuilding(50.0f, 0.0f, -90.0f, 60.0f, 15.0f, 30.0f);
-    drawBuilding(50.0f, 0.0f, -40.0f, 60.0f, 15.0f, 30.0f);
-    drawBuilding(50.0f, 0.0f, 10.0f, 60.0f, 15.0f, 30.0f);
-    drawBuilding(0.0f, 0.0f, 40.0f, 4.0f, 15.0f, 4.0f);
+    // --- DAFTAR GEDUNG BACKGROUND (KUBUS SEDERHANA) ---
+
+    // A. Gapura Belakang (Paling Jauh)
+    // Dua tiang di ujung jalan belakang
+    drawBuilding(20.0f, 0.0f, -320.0f, 5.0f, 20.0f, 5.0f); // Tiang Kiri
+    drawBuilding(60.0f, 0.0f, -320.0f, 5.0f, 20.0f, 5.0f); // Tiang Kanan
+    drawBuilding(40.0f, 18.0f, -320.0f, 45.0f, 4.0f, 5.0f); // Palang Atas
+
+    // B. Gedung Rektorat (Gedung Putih Besar)
+    drawBuilding(50.0f, 0.0f, -160.0f, 60.0f, 25.0f, 60.0f); // Bangunan Utama
+    drawBuilding(10.0f, 0.0f, -160.0f, 15.0f, 15.0f, 20.0f); // Annex Kecil
+
+    // C. Gedung Kuliah (Deretan Gedung Oranye/Abu)
+    drawBuilding(50.0f, 0.0f, -90.0f, 60.0f, 15.0f, 30.0f); // Gedung G3/G2
+    drawBuilding(50.0f, 0.0f, -40.0f, 60.0f, 15.0f, 30.0f); // Gedung G2
+
+    // D. Gedung G1 (Paling dekat dengan pertigaan)
+    drawBuilding(50.0f, 0.0f, 10.0f, 60.0f, 15.0f, 30.0f);  // Gedung G1
+
+    // E. GAPURA DEPAN (AREA MASUK)
+// Posisikan di pinggir jalan (X=1, Z=40)
+    drawGapuraFEB(-16.0f, 0.0f, 44.0f);
+
+    // Tiang Gapura Sisi Satunya (Masih Tiang Biasa)
     drawBuilding(0.0f, 0.0f, 90.0f, 4.0f, 15.0f, 4.0f);
-    drawBuilding(50.0f, 0.0f, 120.0f, 60.0f, 20.0f, 40.0f);
+
+    // F. Gedung Pascasarjana (Di seberang jalan depan)
+    drawBuilding(50.0f, 0.0f, 120.0f, 60.0f, 20.0f, 40.0f); // Gedung Pasca
 
     displayTextParams();
     glutSwapBuffers();
