@@ -339,8 +339,175 @@ static void drawGedungRektoratFEB(float px, float py, float pz) {
 
     glPopMatrix();
 }
+static void drawAuditoriumG3(float px, float py, float pz) {
+    glPushMatrix();
+    glTranslatef(px, py, pz);
 
-// --- FUNGSI SPESIAL: GEDUNG G3 (DETAIL) ---
+    // Rotasi agar menghadap ke Jalan Utama
+    glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+
+    float bodyW = 40.0f; // Lebar Depan
+    float bodyH = 22.0f; // Tinggi Gedung
+    float bodyL = 100.0f; // Panjang ke Belakang
+
+    // ==========================================
+    // 1. STRUKTUR UTAMA
+    // ==========================================
+
+    // Dinding Putih Utama
+    glPushMatrix();
+    glColor3f(0.95f, 0.95f, 0.95f);
+    glTranslatef(0.0f, bodyH / 2.0f, -bodyL / 2.0f);
+    glScalef(bodyW, bodyH, bodyL);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    // Plafon
+    glPushMatrix();
+    glColor3f(0.2f, 0.2f, 0.2f);
+    glTranslatef(0.0f, bodyH, -bodyL / 2.0f);
+    glScalef(bodyW + 2.0f, 1.0f, bodyL + 2.0f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    // Atap Limas Persegi
+    glPushMatrix();
+    glTranslatef(0.0f, bodyH, -bodyL / 2.0f);
+    glColor3f(0.7f, 0.25f, 0.1f);
+    float overhang = 2.0f;
+    float w = (bodyW / 2.0f) + overhang;
+    float l = (bodyL / 2.0f) + overhang;
+    float h = 18.0f;
+
+    glBegin(GL_TRIANGLES);
+    glNormal3f(0.0f, 0.5f, 1.0f); glVertex3f(0.0f, h, 0.0f); glVertex3f(-w, 0.0f, l); glVertex3f(w, 0.0f, l);
+    glNormal3f(1.0f, 0.5f, 0.0f); glVertex3f(0.0f, h, 0.0f); glVertex3f(w, 0.0f, l); glVertex3f(w, 0.0f, -l);
+    glNormal3f(0.0f, 0.5f, -1.0f); glVertex3f(0.0f, h, 0.0f); glVertex3f(w, 0.0f, -l); glVertex3f(-w, 0.0f, -l);
+    glNormal3f(-1.0f, 0.5f, 0.0f); glVertex3f(0.0f, h, 0.0f); glVertex3f(-w, 0.0f, -l); glVertex3f(-w, 0.0f, l);
+    glEnd();
+
+    glColor3f(0.2f, 0.1f, 0.0f);
+    glLineWidth(2.0f);
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, h, 0.0f); glVertex3f(-w, 0.0f, l);
+    glVertex3f(0.0f, h, 0.0f); glVertex3f(w, 0.0f, l);
+    glVertex3f(0.0f, h, 0.0f); glVertex3f(w, 0.0f, -l);
+    glVertex3f(0.0f, h, 0.0f); glVertex3f(-w, 0.0f, -l);
+    glVertex3f(-w, 0.0f, l); glVertex3f(w, 0.0f, l);
+    glVertex3f(w, 0.0f, l); glVertex3f(w, 0.0f, -l);
+    glVertex3f(w, 0.0f, -l); glVertex3f(-w, 0.0f, -l);
+    glVertex3f(-w, 0.0f, -l); glVertex3f(-w, 0.0f, l);
+    glEnd();
+    glLineWidth(1.0f);
+    glPopMatrix();
+
+
+    // ==========================================
+    // 2. TAMPAK SAMPING (PILAR & JENDELA)
+    // ==========================================
+    int numPillars = 8;
+    float pillarGap = bodyL / numPillars;
+
+    for (int i = 0; i <= numPillars; i++) {
+        float zPos = -(i * pillarGap);
+
+        // Pilar Kiri & Kanan
+        glPushMatrix(); glColor3f(0.0f, 0.6f, 0.6f); glTranslatef(-bodyW / 2.0f - 1.0f, bodyH / 2.0f, zPos); glScalef(2.0f, bodyH, 2.0f); glutSolidCube(1.0f); glPopMatrix();
+        glPushMatrix(); glTranslatef(bodyW / 2.0f + 1.0f, bodyH / 2.0f, zPos); glScalef(2.0f, bodyH, 2.0f); glutSolidCube(1.0f); glPopMatrix();
+
+        // Jendela (Kecuali di area pintu samping, misal di index ke-2)
+        // Kita kosongkan index ke-2 untuk pintu
+        if (i < numPillars && i != 2) {
+            float winZ = zPos - (pillarGap / 2.0f);
+            glColor3f(0.2f, 0.2f, 0.3f);
+            glPushMatrix(); glTranslatef(-bodyW / 2.0f - 0.1f, 15.0f, winZ); glScalef(0.5f, 5.0f, 8.0f); glutSolidCube(1.0f); glPopMatrix();
+            glPushMatrix(); glTranslatef(-bodyW / 2.0f - 0.1f, 5.0f, winZ); glScalef(0.5f, 5.0f, 8.0f); glutSolidCube(1.0f); glPopMatrix();
+            glPushMatrix(); glTranslatef(bodyW / 2.0f + 0.1f, 15.0f, winZ); glScalef(0.5f, 5.0f, 8.0f); glutSolidCube(1.0f); glPopMatrix();
+            glPushMatrix(); glTranslatef(bodyW / 2.0f + 0.1f, 5.0f, winZ); glScalef(0.5f, 5.0f, 8.0f); glutSolidCube(1.0f); glPopMatrix();
+        }
+    }
+
+    // ==========================================
+    // 3. TAMPAK DEPAN (FACADE)
+    // ==========================================
+    glPushMatrix();
+    glColor3f(0.15f, 0.15f, 0.15f);
+    glTranslatef(0.0f, 5.0f, 0.1f);
+    glScalef(bodyW, 10.0f, 1.0f);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    // Pilar Tengah & Panel Hitam
+    glPushMatrix(); glColor3f(0.0f, 0.6f, 0.6f); glTranslatef(0.0f, 5.0f, 1.0f); glScalef(4.0f, 10.0f, 2.0f); glutSolidCube(1.0f); glPopMatrix();
+    glPushMatrix(); glColor3f(0.1f, 0.1f, 0.1f); glTranslatef(0.0f, 16.0f, 1.0f); glScalef(7.0f, 12.0f, 0.5f); glutSolidCube(1.0f); glPopMatrix();
+
+    // Tulisan G3
+    glPushMatrix();
+    glColor3f(1.0f, 1.0f, 1.0f);
+    float wG = (float)glutStrokeWidth(GLUT_STROKE_ROMAN, 'G');
+    float w3 = (float)glutStrokeWidth(GLUT_STROKE_ROMAN, '3');
+    float totalW = (wG + w3) * 0.05f;
+    glTranslatef(-totalW / 2.0f, 15.0f, 1.5f);
+    glScalef(0.05f, 0.05f, 0.05f);
+    glLineWidth(4.0f);
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'G');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, '3');
+    glLineWidth(1.0f);
+    glPopMatrix();
+
+    // Tulisan Auditorium
+    glPushMatrix(); glColor3f(0.8f, 0.8f, 0.8f); glTranslatef(-18.0f, 6.0f, 1.0f); glScalef(0.012f, 0.012f, 0.012f);
+    const char* txtAud = "AUDITORIUM"; for (int j = 0; j < strlen(txtAud); j++) glutStrokeCharacter(GLUT_STROKE_ROMAN, txtAud[j]); glPopMatrix();
+
+    // Garis Fakultas
+    glPushMatrix(); glColor3f(0.8f, 0.8f, 0.8f); glTranslatef(10.0f, 7.0f, 1.0f); glScalef(14.0f, 0.5f, 0.1f); glutSolidCube(1.0f); glPopMatrix();
+    glPushMatrix(); glTranslatef(10.0f, 5.5f, 1.0f); glScalef(10.0f, 0.5f, 0.1f); glutSolidCube(1.0f); glPopMatrix();
+
+    // Pilar Sudut
+    glPushMatrix(); glColor3f(0.0f, 0.6f, 0.6f); glTranslatef(-19.0f, 11.0f, 0.0f); glScalef(2.0f, 22.0f, 2.0f); glutSolidCube(1.0f); glPopMatrix();
+    glPushMatrix(); glColor3f(0.0f, 0.6f, 0.6f); glTranslatef(19.0f, 11.0f, 0.0f); glScalef(2.0f, 22.0f, 2.0f); glutSolidCube(1.0f); glPopMatrix();
+
+
+    // ==========================================
+    // 4. PINTU MASUK KACA (PINDAH KE SAMPING)
+    // ==========================================
+    // Loop 2 kali: Kiri (d=-1) dan Kanan (d=1)
+
+    for (int d = -1; d <= 1; d += 2) {
+        // X = Posisi dinding samping (Lebar gedung/2)
+        // Z = Lokasi pintu di sepanjang sisi (Misal di -30.0f)
+        float doorSideX = d * (bodyW / 2.0f + 0.1f); // Sedikit keluar dari dinding
+        float doorSideZ = -30.0f;
+
+        glPushMatrix();
+        glTranslatef(doorSideX, 4.0f, doorSideZ);
+
+        // Rotasi agar pintu menghadap keluar
+        // Kiri (-1) -> Putar -90
+        // Kanan (1) -> Putar 90
+        glRotatef(d * 90.0f, 0.0f, 1.0f, 0.0f);
+
+        // A. Frame Putih Luar
+        glColor3f(0.95f, 0.95f, 0.95f);
+        glPushMatrix(); glScalef(8.0f, 8.0f, 0.5f); glutSolidCube(1.0f); glPopMatrix();
+
+        // B. Kaca Gelap
+        glColor3f(0.2f, 0.25f, 0.3f);
+        glPushMatrix(); glTranslatef(0.0f, 0.0f, 0.1f); glScalef(7.0f, 7.0f, 0.5f); glutSolidCube(1.0f); glPopMatrix();
+
+        // C. Kisi-kisi Frame Putih
+        glColor3f(0.95f, 0.95f, 0.95f);
+        glPushMatrix(); glTranslatef(0.0f, 0.0f, 0.2f); glScalef(0.5f, 7.0f, 0.5f); glutSolidCube(1.0f); glPopMatrix(); // Garis Tengah
+        glPushMatrix(); glTranslatef(0.0f, 1.5f, 0.2f); glScalef(7.0f, 0.5f, 0.5f); glutSolidCube(1.0f); glPopMatrix(); // Garis Atas
+        glPushMatrix(); glTranslatef(0.0f, -1.5f, 0.2f); glScalef(7.0f, 0.5f, 0.5f); glutSolidCube(1.0f); glPopMatrix(); // Garis Bawah
+
+        glPopMatrix();
+    }
+
+    glPopMatrix();
+}
+
+// --- FUNGSI SPESIAL: GEDUNG Ngarep Dewe ---
 static void drawGedungG3Unesa(float px, float py, float pz) {
     glPushMatrix();
     glTranslatef(px, py, pz);
@@ -492,39 +659,32 @@ static void display() {
 
     // 1. SKETSA DUNIA
     drawEnvironment();
-
-    // Gedung Utama G3 (Menara Kaca)
     drawGedungG3Unesa(40.0f, 0.0f, -250.0f);
-
-    // Monumen Depan
     drawMonumentDepan(10.0f, 0.0f, -300.0f);
-
-    // Gedung Rektorat/Dosen Baru (Detail)
     drawGedungRektoratFEB(14.0f, 0.0f, -159.0f);
-
-    // Gapura Depan (Lengkung)
     drawGapuraFEB(-16.0f, 0.0f, 44.0f);
 
-    // --- BACKGROUND BUILDINGS (GEDUNG PENDUKUNG) ---
+    // --- BACKGROUND BUILDINGS ---
 
-    // Gedung Belakang (Jauh) - Tetap dipertahankan
+    // Gedung Jauh
     drawBuilding(20.0f, 0.0f, -320.0f, 5.0f, 20.0f, 5.0f);
     drawBuilding(60.0f, 0.0f, -320.0f, 5.0f, 20.0f, 5.0f);
     drawBuilding(40.0f, 18.0f, -320.0f, 45.0f, 4.0f, 5.0f);
 
-    // --- BAGIAN YANG DIHAPUS (HILANGKAN DARI SINI) ---
-    // drawBuilding(50.0f, 0.0f, -160.0f, 60.0f, 25.0f, 60.0f); <--- INI YANG NABRAK (SUDAH DIHAPUS)
-    // drawBuilding(10.0f, 0.0f, -160.0f, 15.0f, 15.0f, 20.0f); <--- INI JUGA NABRAK (SUDAH DIHAPUS)
+    // --- AUDITORIUM G3 (POSISI BARU: MAJU KE X=9) ---
+    // Koordinat Baru: 9, 0, -90 (Sesuai request)
+    drawAuditoriumG3(9.0f, 0.0f, -90.0f);
 
-    // Gedung Samping (G2, G1, dll) - Tetap dipertahankan
-    drawBuilding(50.0f, 0.0f, -90.0f, 60.0f, 15.0f, 30.0f);
+
+    // Gedung Samping Lainnya
     drawBuilding(50.0f, 0.0f, -40.0f, 60.0f, 15.0f, 30.0f);
     drawBuilding(50.0f, 0.0f, 10.0f, 60.0f, 15.0f, 30.0f);
-    drawBuilding(50.0f, 0.0f, 120.0f, 60.0f, 20.0f, 40.0f); // Gedung Pasca
 
-    // 2. HUD
+    // Tiang Gapura Lama & Gedung Pasca
+    drawBuilding(0.0f, 0.0f, 90.0f, 4.0f, 15.0f, 4.0f);
+    drawBuilding(50.0f, 0.0f, 120.0f, 60.0f, 20.0f, 40.0f);
+
     displayTextParams();
-
     glutSwapBuffers();
 }
 
