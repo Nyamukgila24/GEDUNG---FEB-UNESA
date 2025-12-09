@@ -502,9 +502,9 @@ static void drawAuditoriumG3(float px, float py, float pz) {
     glPushMatrix(); glColor3f(0.8f, 0.8f, 0.8f); glTranslatef(-18.0f, 6.0f, 1.0f); glScalef(0.012f, 0.012f, 0.012f); const char* txtAud = "AUDITORIUM"; for (int j = 0; j < strlen(txtAud); j++) glutStrokeCharacter(GLUT_STROKE_ROMAN, txtAud[j]); glPopMatrix();
 
     // Detail
-    glPushMatrix(); glColor3f(0.8f, 0.8f, 0.8f); glTranslatef(10.0f, 7.0f, 1.0f); glScalef(14.0f, 0.5f, 0.1f); glutSolidCube(1.0f); glPopMatrix();
-    glPushMatrix(); glTranslatef(10.0f, 5.5f, 1.0f); glScalef(10.0f, 0.5f, 0.1f); glutSolidCube(1.0f); glPopMatrix();
-    glPushMatrix(); glColor3f(0.0f, 0.6f, 0.6f); glTranslatef(-19.0f, 11.0f, 0.0f); glScalef(2.0f, 22.0f, 2.0f); glutSolidCube(1.0f); glPopMatrix();
+        glPushMatrix(); glColor3f(0.8f, 0.8f, 0.8f); glTranslatef(10.0f, 7.0f, 1.0f); glScalef(14.0f, 0.5f, 0.1f); glutSolidCube(1.0f); glPopMatrix();
+        glPushMatrix(); glTranslatef(10.0f, 5.5f, 1.0f); glScalef(10.0f, 0.5f, 0.1f); glutSolidCube(1.0f); glPopMatrix();
+        glPushMatrix(); glColor3f(0.0f, 0.6f, 0.6f); glTranslatef(-19.0f, 11.0f, 0.0f); glScalef(2.0f, 22.0f, 2.0f); glutSolidCube(1.0f); glPopMatrix();
     glPushMatrix(); glColor3f(0.0f, 0.6f, 0.6f); glTranslatef(19.0f, 11.0f, 0.0f); glScalef(2.0f, 22.0f, 2.0f); glutSolidCube(1.0f); glPopMatrix();
 
     // Pintu
@@ -742,9 +742,7 @@ static void display() {
     drawGedungRektoratFEB(14.0f, 0.0f, -159.0f);
     drawGapuraFEB(-16.0f, 0.0f, 44.0f);
 
-    drawBuilding(20.0f, 0.0f, -320.0f, 5.0f, 20.0f, 5.0f);
-    drawBuilding(60.0f, 0.0f, -320.0f, 5.0f, 20.0f, 5.0f);
-    drawBuilding(40.0f, 18.0f, -320.0f, 45.0f, 4.0f, 5.0f);
+    
 
     // G3 (Auditorium)
     drawAuditoriumG3(9.0f, 0.0f, -90.0f);
